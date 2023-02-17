@@ -56,7 +56,7 @@ PROGRAM GeneralisedLaplaceAnalytic
     & sumLogConvergenceData(6,MAX_NUMBER_OF_INTERPOLATIONS)
   CHARACTER(LEN=255) :: commandArgument,filename
 
-  !CMISS variables
+  !OpenCMISS variables
   TYPE(cmfe_BasisType) :: basis
   TYPE(cmfe_BoundaryConditionsType) :: boundaryConditions
   TYPE(cmfe_ComputationEnvironmentType) :: computationEnvironment
@@ -105,7 +105,7 @@ PROGRAM GeneralisedLaplaceAnalytic
     !If there are not enough arguments default the problem specification
     baseNumberOfGlobalXElements=4
     baseNumberOfGlobalYElements=2
-    fibreAngleDegrees=30_CMISSIntg
+    fibreAngleDegrees=60_CMISSIntg
     numberOfRefinements=4
   ENDIF
   fibreAngleRadians=REAL(fibreAngleDegrees,CMISSRP)*2.0_CMISSRP*PI/360.0_CMISSRP
@@ -176,7 +176,7 @@ PROGRAM GeneralisedLaplaceAnalytic
       !Set the regions coordinate system to the 2D RC coordinate system that we have created
       CALL cmfe_Region_CoordinateSystemSet(region,coordinateSystem,err)
       !Set the region label
-      CALL cmfe_Region_LabelSet(region,"GeneralisedLaplaceEquation",err)
+      CALL cmfe_Region_LabelSet(region,"GeneralisedLaplace",err)
       !Finish the creation of the region
       CALL cmfe_Region_CreateFinish(region,err)
 
@@ -258,6 +258,8 @@ PROGRAM GeneralisedLaplaceAnalytic
       CALL cmfe_Field_CreateStart(GEOMETRIC_FIELD_USER_NUMBER,region,geometricField,err)
       !Set the decomposition to use
       CALL cmfe_Field_DecompositionSet(geometricField,decomposition,err)
+      !Set the variable label
+      CALL cmfe_Field_VariableLabelSet(geometricField,CMFE_FIELD_U_VARIABLE_TYPE,"Geometry",err)
       !Set the domain to be used by the field components.
       CALL cmfe_Field_ComponentMeshComponentSet(geometricField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,err)
       CALL cmfe_Field_ComponentMeshComponentSet(geometricField,CMFE_FIELD_U_VARIABLE_TYPE,2,1,err)
@@ -280,10 +282,13 @@ PROGRAM GeneralisedLaplaceAnalytic
       CALL cmfe_Field_DecompositionSet(fibreField,decomposition,err)
       !Set the geometric field
       CALL cmfe_Field_GeometricFieldSet(fibreField,geometricField,err)
+      !Set the variable label
+      CALL cmfe_Field_VariableLabelSet(fibreField,CMFE_FIELD_U_VARIABLE_TYPE,"Fibre",err)
       !Set the domain to be used by the field components.
       CALL cmfe_Field_ComponentMeshComponentSet(fibreField,CMFE_FIELD_U_VARIABLE_TYPE,1,1,err)
       !Set the interpolation type to be constant
       CALL cmfe_Field_ComponentInterpolationSet(fibreField,CMFE_FIELD_U_VARIABLE_TYPE,1,CMFE_FIELD_CONSTANT_INTERPOLATION,err)
+      CALL cmfe_Field_ComponentInterpolationSet(fibreField,CMFE_FIELD_U_VARIABLE_TYPE,2,CMFE_FIELD_CONSTANT_INTERPOLATION,err)
       !Finish creating the field
       CALL cmfe_Field_CreateFinish(fibreField,err)
 
@@ -365,10 +370,10 @@ PROGRAM GeneralisedLaplaceAnalytic
       CALL cmfe_Equations_SparsityTypeSet(equations,CMFE_EQUATIONS_SPARSE_MATRICES,err)
       !CALL cmfe_Equations_SparsityTypeSet(equations,CMFE_EQUATIONS_FULL_MATRICES,err)
       !Set the equations set output
-      CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_NO_OUTPUT,err)
+      !CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_NO_OUTPUT,err)
       !CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_TIMING_OUTPUT,err)
       !CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_MATRIX_OUTPUT,err)
-      !CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_ELEMENT_MATRIX_OUTPUT,err)
+      CALL cmfe_Equations_OutputTypeSet(equations,CMFE_EQUATIONS_ELEMENT_MATRIX_OUTPUT,err)
       !Finish the equations set equations
       CALL cmfe_EquationsSet_EquationsCreateFinish(equationsSet,err)
 
