@@ -13,9 +13,10 @@ Building the example
 The fortran version of the example can be configured and built with CMake::
 
   git clone https://github.com/OpenCMISS-Examples/laplace_equation
-  mkdir laplace_equation-build
-  cd laplace_equation-build
-  cmake -DOpenCMISSLibs_DIR=/path/to/opencmisslib/install ../laplace_equation
+  cd laplace_equation
+  mkdir build
+  cd build
+  cmake -DOpenCMISS_INSTALL_ROOT=/path/to/opencmiss/install ../.
   make
 
 This will create the example executable "laplace_equation" in ./src/fortran/ directory.
