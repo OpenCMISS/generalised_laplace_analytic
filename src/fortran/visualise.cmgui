@@ -1,0 +1,30 @@
+$name = "GeneralisedLaplaceEquation";
+$numProcs = 1;
+
+for($rank=0; $rank < $numProcs; $rank=$rank+1)
+   {
+   $filename = sprintf("./%s.part%d.exnode", $name, $rank);
+   gfx read node "$filename";
+   }
+for($rank=0; $rank < $numProcs; $rank=$rank+1)
+   {
+   $filename = sprintf("./%s.part%d.exelem", $name, $rank);
+   gfx read elem "$filename";
+   }
+
+gfx def faces egroup $name;
+
+gfx modify g_element $name general clear circle_discretization 6 default_coordinate Coordinate element_discretization "4*4*4" native_discretization none;
+gfx modify g_element $name lines select_on invisible material default selected_material default_selected;
+gfx modify g_element $name surfaces select_on material default data Phi spectrum default selected_material default_selected render_shaded;
+gfx modify g_element $name node_points glyph sphere general size "0.025*0.025*0.025" centre 0,0,0 font default label cmiss_number select_on material blue selected_material default_selected;
+gfx modify g_element $name cylinders constant_radius 0.005 select_on material gold selected_material default_selected render_shaded;
+
+gfx create window 1 double_buffer;
+gfx modify window 1 image scene default light_model default;
+gfx modify window 1 image add_light default;
+gfx modify window 1 layout simple ortho_axes z -y eye_spacing 0.25 width 567 height 653;
+gfx modify window 1 set current_pane 1;
+gfx modify window 1 background colour 0 0 0 texture none;
+gfx modify window 1 view parallel eye_point -4.0 -4.0 4.0 interest_point 1.0 0.5 1.5 up_vector 0.3 0.3 0.9 view_angle 40.0 near_clipping_plane 0.01 far_clipping_plane 15.0 relative_viewport ndc_placement -1 1 2 2 viewport_coordinates 0 0 1 1;
+gfx modify window 1 set transform_tool current_pane 1 std_view_angle 40 normal_lines no_antialias depth_of_field 0.0 fast_transparency blend_normal;
